@@ -65,35 +65,84 @@ async function initializeApp() {
   }
 
   initPromise = (async () => {
-    await registerRoutes(httpServer, app);
-    
-    // Error handler
-    app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-      res.status(status).json({ message });
-    });
-
-    // Serve static files in production
-    // In Vercel, static files are in dist/public relative to project root
-    const distPath = process.env.VERCEL 
-      ? path.resolve(process.cwd(), "dist", "public")
-      : path.resolve(__dirname, "..", "..", "dist", "public");
-    
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-      // fall through to index.html if the file doesn't exist
-      app.use("*", (_req, res) => {
-        res.sendFile(path.resolve(distPath, "index.html"));
+    try {
+      await registerRoutes(httpServer, app);
+      
+      // Error handler
+      app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+        console.error("Express error:", err);
+        const status = err.status || err.statusCode || 500;
+        const message = err.message || "Internal Server Error";
+        res.status(status).json({ message, error: err.stack });
       });
-    } else {
-      // Fallback: use serveStatic function
-      serveStatic(app);
-    }
 
-    // Create serverless handler
-    handler = serverless(app);
-    appInitialized = true;
+      // Serve static files in production
+      // Try multiple possible paths for dist/public
+      const possiblePaths = [
+        path.resolve(process.cwd(), "dist", "public"),
+        path.resolve(process.cwd(), "..", "dist", "public"),
+        path.resolve(__dirname, "..", "dist", "public"),
+        path.resolve(__dirname, "..", "..", "dist", "public"),
+      ];
+
+      let distPath: string | null = null;
+      for (const testPath of possiblePaths) {
+        console.log(`Checking for static files at: ${testPath}`);
+        if (fs.existsSync(testPath)) {
+          distPath = testPath;
+          console.log(`Found static files at: ${distPath}`);
+          break;
+        }
+      }
+
+      if (distPath) {
+        app.use(express.static(distPath));
+        // fall through to index.html if the file doesn't exist (SPA routing)
+        app.use("*", (req, res) => {
+          // Skip API routes
+          if (req.path.startsWith("/api")) {
+            return res.status(404).json({ error: "API route not found" });
+          }
+          const indexPath = path.resolve(distPath!, "index.html");
+          if (fs.existsSync(indexPath)) {
+            res.sendFile(indexPath);
+          } else {
+            console.error(`index.html not found at: ${indexPath}`);
+            res.status(500).json({ 
+              error: "index.html not found",
+              path: indexPath,
+              cwd: process.cwd(),
+              __dirname: __dirname
+            });
+          }
+        });
+      } else {
+        console.error("Static files not found in any of the expected paths:", possiblePaths);
+        console.error("Current working directory:", process.cwd());
+        console.error("__dirname:", __dirname);
+        // Don't throw, just log - we can still serve API routes
+        app.use("*", (req, res) => {
+          if (req.path.startsWith("/api")) {
+            res.status(404).json({ error: "API route not found" });
+          } else {
+            res.status(500).json({ 
+              error: "Static files not found. Build may have failed.",
+              checkedPaths: possiblePaths,
+              cwd: process.cwd()
+            });
+          }
+        });
+      }
+
+      // Create serverless handler
+      handler = serverless(app, {
+        binary: ['image/*', 'application/pdf', 'application/octet-stream']
+      });
+      appInitialized = true;
+    } catch (error) {
+      console.error("Error initializing app:", error);
+      throw error;
+    }
   })();
 
   await initPromise;
@@ -105,7 +154,16 @@ export default async function vercelHandler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  const serverlessHandler = await initializeApp();
-  return serverlessHandler(req, res);
+  try {
+    const serverlessHandler = await initializeApp();
+    return await serverlessHandler(req, res);
+  } catch (error) {
+    console.error("Handler error:", error);
+    res.status(500).json({ 
+      error: "Internal server error",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+  }
 }
 
