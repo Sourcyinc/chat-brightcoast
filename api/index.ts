@@ -4,8 +4,13 @@ import express from "express";
 import { createServer } from "http";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { registerRoutes } from "../server/routes";
 import { serveStatic } from "../server/static";
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Create Express app (same as server/index.ts)
 const app = express();
@@ -25,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 // Request logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const requestPath = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
@@ -36,8 +41,8 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      const logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms${
+    if (requestPath.startsWith("/api")) {
+      const logLine = `${req.method} ${requestPath} ${res.statusCode} in ${duration}ms${
         capturedJsonResponse ? ` :: ${JSON.stringify(capturedJsonResponse)}` : ""
       }`;
       console.log(logLine);
@@ -73,7 +78,7 @@ async function initializeApp() {
     // In Vercel, static files are in dist/public relative to project root
     const distPath = process.env.VERCEL 
       ? path.resolve(process.cwd(), "dist", "public")
-      : path.resolve(__dirname, "..", "dist", "public");
+      : path.resolve(__dirname, "..", "..", "dist", "public");
     
     if (fs.existsSync(distPath)) {
       app.use(express.static(distPath));
