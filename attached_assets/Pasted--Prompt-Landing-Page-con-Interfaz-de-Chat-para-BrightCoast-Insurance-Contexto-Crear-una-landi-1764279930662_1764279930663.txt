@@ -1,0 +1,111 @@
+# Prompt: Landing Page con Interfaz de Chat para BrightCoast Insurance
+
+## Contexto
+
+Crear una landing page minimalista y profesional cuyo único propósito es presentar una interfaz de chat. Los usuarios llegan desde ads de Google/Meta buscando seguros en Florida. El chat es atendido por un agente llamado “Mr. Bright”.
+
+## Especificaciones de Diseño
+
+### Paleta de Colores (basada en BrightCoast Insurance)
+
+- **Primario:** Navy blue (#1e3a5f o similar)
+- **Acento:** Dorado/Amarillo (#d4a84b o similar)
+- **Fondo:** Blanco o gris muy claro (#f8f9fa)
+- **Texto:** Gris oscuro (#2d3748)
+- **Burbujas del agente:** Gris claro (#e8eaed)
+- **Burbujas del usuario:** Navy blue con texto blanco
+
+### Estilo Visual
+
+- Fondo claro, limpio, profesional
+- Diseño minimalista con toques de calidez
+- Bordes redondeados suaves (8-12px)
+- Sombras sutiles para dar profundidad
+- Tipografía sans-serif moderna (Inter, Plus Jakarta Sans, o similar)
+
+## Estructura de la Landing
+
+### Estado 1: Pantalla de Bienvenida
+
+Componentes:
+
+1. **Logo de BrightCoast** centrado en la parte superior (pequeño, no invasivo)
+1. **Headline principal:** “Get the Coverage You Need”
+1. **Subtítulo:** “Chat with Mr. Bright to find the right insurance for your home, auto, or business”
+1. **Avatar de Mr. Bright:** Icono circular con las iniciales “MB” o un ícono amigable en colores de la marca
+1. **Botón CTA:** “Start Conversation” - botón prominente en navy blue con hover en dorado
+1. **Footer sutil:** “Powered by Bright Coast Insurance” o similar
+
+### Estado 2: Interfaz de Chat (después del clic)
+
+Transición suave desde el estado 1 al chat completo.
+
+**Header del Chat:**
+
+- Avatar de Mr. Bright (izquierda)
+- Nombre “Mr. Bright” con indicador de estado “Online” (punto verde)
+- Fondo navy blue sutil o blanco con borde inferior
+
+**Área de Mensajes:**
+
+- Fondo blanco o gris muy claro
+- Mensaje inicial de Mr. Bright ya visible:
+
+> “Hi there! 👋 I’m Mr. Bright, your insurance assistant. I’m here to help you find the right coverage for your needs. To get started, could you tell me a bit about what type of insurance you’re looking for today?”
+- Burbujas del agente alineadas a la izquierda con avatar pequeño
+- Burbujas del usuario alineadas a la derecha en navy blue
+- Timestamps sutiles opcionales
+
+**Indicador de Escritura:**
+
+- Tres puntos animados (bouncing dots) dentro de una burbuja gris
+- Aparece cuando el agente está “escribiendo”
+
+**Input de Mensaje:**
+
+- Campo de texto con placeholder: “Type your message…”
+- Botón de enviar con ícono de flecha o “Send”
+- Bordes redondeados, sombra sutil al hacer focus
+
+## Especificaciones Técnicas
+
+### Responsive Design
+
+- **Desktop:** Chat centrado, max-width 500-600px, altura ~70-80vh
+- **Mobile:** Full width con padding lateral, altura adaptable al viewport
+
+### Animaciones
+
+- Transición suave de Estado 1 a Estado 2 (fade o slide up)
+- Mensajes nuevos aparecen con fade-in sutil desde abajo
+- Indicador de typing con dots que suben y bajan secuencialmente
+- Hover en botones con transición de color suave
+
+### Funcionalidad UI (solo visual, sin backend)
+
+- El input debe verse funcional (focus states, etc.)
+- Simular una conversación de ejemplo para mostrar el diseño
+- Scroll automático hacia abajo cuando hay muchos mensajes
+
+## Referencias de Estilo
+
+- Interfaz de Claude (claude.ai): limpieza, espaciado, tipografía
+- ChatGPT: simplicidad del input y flujo de mensajes
+- Intercom/Drift: calidez y profesionalismo en chat widgets
+
+## Entregable
+
+Un componente React o HTML/CSS/JS que contenga:
+
+1. La landing completa con ambos estados
+1. Transición funcional entre estados
+1. Chat con mensajes de ejemplo pre-cargados
+1. Diseño 100% responsive
+1. Animación de typing indicator
+
+## Notas Adicionales
+
+- NO incluir formularios tradicionales de captura de datos
+- El diseño debe transmitir confianza y profesionalismo (es para seguros)
+- Evitar que parezca un chatbot genérico; debe sentirse como una experiencia de marca
+- El usuario nunca debe sentirse “vendido”, sino “asistido”

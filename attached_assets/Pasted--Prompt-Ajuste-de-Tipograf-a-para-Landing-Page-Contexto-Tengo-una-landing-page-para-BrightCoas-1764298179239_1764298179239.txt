@@ -1,0 +1,102 @@
+# Prompt: Ajuste de Tipografía para Landing Page
+
+## Contexto
+Tengo una landing page para BrightCoast Insurance que ya está casi lista. Tiene el logo real, un avatar 3D profesional de Mr. Bright, buenos colores (navy, dorado, blancos), y el flujo funciona bien. Solo necesito mejorar la tipografía del headline para que tenga más impacto visual a nivel marketing.
+
+## Cambio Requerido
+
+### Tipografía del Headline "Get Your Personalized Quote"
+
+**Objetivo:** Que el headline se sienta más premium, llamativo y con personalidad de marca, no como una fuente genérica del sistema.
+
+**Opciones de fuentes recomendadas (Google Fonts):**
+
+1. **Plus Jakarta Sans** (recomendada)
+   - Moderna, profesional, con personalidad
+   - Weight: 700 o 800
+   - `https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap`
+
+2. **Outfit**
+   - Geométrica, limpia, muy legible
+   - Weight: 700
+   - `https://fonts.googleapis.com/css2?family=Outfit:wght@700&display=swap`
+
+3. **Sora**
+   - Moderna con toques únicos
+   - Weight: 700
+   - `https://fonts.googleapis.com/css2?family=Sora:wght@700&display=swap`
+
+4. **Manrope**
+   - Profesional, confiable, ideal para seguros
+   - Weight: 700 o 800
+   - `https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&display=swap`
+
+**Aplicar al headline:**
+- font-family: 'Plus Jakarta Sans', sans-serif (o la elegida)
+- font-weight: 700 u 800
+- Mantener el tamaño y color actuales
+
+**Opcional - destacar "Personalized":**
+- Agregar un highlight sutil con background en dorado (#d4a84b) con opacidad baja
+- O usar un underline decorativo
+- O simplemente dejarlo en el mismo estilo pero la nueva fuente ya le dará más vida
+
+## Cambio Requerido #2: Card con Pasos Visuales
+
+### Reemplazar el subtítulo actual
+El texto actual es un párrafo centrado que se pierde visualmente:
+> "Mr. Bright will ask you a few quick questions so we can understand how to help you. It takes less than 2 minutes, and one of our team members will follow up with your best options."
+
+### Nuevo formato: Card con Glassmorphism + 3 Pasos
+
+**Estilo de la Card:**
+- Background: rgba(255, 255, 255, 0.7)
+- Backdrop-filter: blur(10px)
+- Border: 1px solid rgba(255, 255, 255, 0.8)
+- Border-radius: 20px
+- Padding: 24px 28px
+- Box-shadow: 0 8px 32px rgba(30, 58, 95, 0.1)
+- Max-width: 420px
+- Margin: 24px auto
+
+**Contenido: 3 pasos con íconos SVG (Lucide React)**
+
+| Ícono | Texto |
+|-------|-------|
+| `<MessageCircle />` | Answer a few quick questions |
+| `<Clock />` | Takes less than 2 minutes |
+| `<Phone />` | Our team follows up with your best options |
+
+**Estilo de cada paso:**
+- Display: flex, align-items: center, gap: 14px
+- Espacio entre pasos: 16px
+
+**Contenedor del ícono:**
+- Width/Height: 44px
+- Background: linear-gradient(135deg, #f8f9fa, #e9ecef)
+- Border-radius: 12px
+- Display: flex, centered
+- Box-shadow: 0 2px 8px rgba(0,0,0,0.06)
+
+**Ícono:**
+- Size: 22px
+- Color: #1e3a5f (navy)
+- strokeWidth: 1.5
+
+**Texto del paso:**
+- Font-size: 16px
+- Font-weight: 500
+- Color: #2d3748
+
+## NO cambiar
+- Logo de BrightCoast
+- Avatar de Mr. Bright
+- Colores generales (navy, dorado, blancos)
+- Botón "Start Conversation" y su estilo
+- "Free • No commitment"
+- "Powered by Bright Coast Insurance"
+
+## Resultado Esperado
+La misma landing pero con:
+1. Headline más impactante con nueva tipografía
+2. Subtítulo transformado en una card elegante con 3 pasos claros y fáciles de escanear visualmente
