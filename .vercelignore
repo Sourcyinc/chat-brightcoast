@@ -9,6 +9,5 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.log
-attached_assets
 https_
 

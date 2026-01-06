@@ -46,6 +46,7 @@ export default defineConfig({
     fs: {
       strict: true,
       deny: ["**/.*"],
+      allow: [".."], // Allow access to parent directory for attached_assets
     },
   },
 });
