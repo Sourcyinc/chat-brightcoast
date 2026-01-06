@@ -134,7 +134,7 @@ async function initializeApp() {
         res.status(status).json({ message, error: err.stack });
       });
 
-      // Serve static files in production
+      // Serve static files and handle SPA routing
       // Try multiple possible paths for dist/public
       const possiblePaths = [
         path.resolve(process.cwd(), "dist", "public"),
@@ -154,13 +154,19 @@ async function initializeApp() {
       }
 
       if (distPath) {
-        app.use(express.static(distPath));
-        // fall through to index.html if the file doesn't exist (SPA routing)
+        // Serve static files (JS, CSS, images, etc.)
+        app.use(express.static(distPath, {
+          maxAge: "1y",
+          immutable: true
+        }));
+        
+        // Fallback to index.html for SPA routing (all non-API routes)
         app.use("*", (req, res) => {
           // Skip API routes
           if (req.path.startsWith("/api")) {
             return res.status(404).json({ error: "API route not found" });
           }
+          
           const indexPath = path.resolve(distPath!, "index.html");
           if (fs.existsSync(indexPath)) {
             res.sendFile(indexPath);
@@ -178,7 +184,7 @@ async function initializeApp() {
         console.error("Static files not found in any of the expected paths:", possiblePaths);
         console.error("Current working directory:", process.cwd());
         console.error("__dirname:", __dirname);
-        // Don't throw, just log - we can still serve API routes
+        // Fallback: still try to serve index.html for SPA routing
         app.use("*", (req, res) => {
           if (req.path.startsWith("/api")) {
             res.status(404).json({ error: "API route not found" });
