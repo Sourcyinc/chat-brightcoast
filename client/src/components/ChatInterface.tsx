@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, MoreHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import avatarImage from "@assets/generated_images/mr._bright_avatar_no_text.png";
 
@@ -60,6 +60,7 @@ export default function ChatInterface({ onClose }: ChatInterfaceProps) {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatIdRef = useRef<string>(getOrCreateChatId());
 
   // Add second part of welcome message after a short delay
@@ -89,6 +90,19 @@ export default function ChatInterface({ onClose }: ChatInterfaceProps) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isTyping]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to auto to get the correct scrollHeight
+      textarea.style.height = "auto";
+      // Set height based on scrollHeight, with max height of 120px (about 5 lines)
+      const maxHeight = 120;
+      const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+      textarea.style.height = `${newHeight}px`;
+    }
+  }, [inputValue]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -159,10 +173,10 @@ export default function ChatInterface({ onClose }: ChatInterfaceProps) {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSend();
-    }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Enter alone creates a new line (default behavior)
+    // Only the send button sends the message
+    // This allows users to write multi-line messages easily
   };
 
   return (
@@ -266,13 +280,15 @@ export default function ChatInterface({ onClose }: ChatInterfaceProps) {
 
       {/* Input Area */}
       <div className="p-4 bg-white border-t border-border/40">
-        <div className="flex gap-2">
-          <Input
+        <div className="flex gap-2 items-end">
+          <Textarea
+            ref={textareaRef}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="flex-1 bg-gray-50 border-gray-200 focus-visible:ring-primary/20 rounded-full px-4 py-6 shadow-inner"
+            placeholder="Type your message... (Press Enter for new line)"
+            className="flex-1 bg-gray-50 border-gray-200 focus-visible:ring-primary/20 rounded-2xl px-4 py-3 shadow-inner resize-none overflow-hidden min-h-[48px] max-h-[120px] text-sm leading-relaxed"
+            rows={1}
             data-testid="input-message"
           />
           <Button
@@ -285,6 +301,9 @@ export default function ChatInterface({ onClose }: ChatInterfaceProps) {
             <Send className="w-5 h-5" />
           </Button>
         </div>
+        <p className="text-xs text-muted-foreground mt-2 px-1">
+          Press <kbd className="px-1.5 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-300 rounded">Enter</kbd> for a new line, click the send button to send your message
+        </p>
       </div>
     </motion.div>
   );
